@@ -11,6 +11,8 @@ public class Die : MonoBehaviour
     [SerializeField] private float _force = 5f;
     [SerializeField] private float _torque = 5f;
     
+    [SerializeField] private bool _showDebugGizmos = false;
+    
     private Rigidbody _rigidbody;
     private bool _isRolling = false;
 
@@ -57,5 +59,20 @@ public class Die : MonoBehaviour
         
         if (upSide != null) return int.Parse(upSide.name);
         return 0;
+    }
+    
+    private void OnDrawGizmos()
+    {
+        if (!_showDebugGizmos || Application.isPlaying) return;
+
+        Gizmos.color = Color.yellow;
+        foreach (Transform child in GetComponentsInChildren<Transform>(true))
+        {
+            if (child == transform) continue;
+            if (int.TryParse(child.name, out _))
+            {
+                Gizmos.DrawRay(child.position, child.up * 0.5f);
+            }
+        }
     }
 }
